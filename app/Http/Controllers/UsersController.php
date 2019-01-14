@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Auth;
 
 class UsersController extends Controller
 {
@@ -12,7 +13,10 @@ class UsersController extends Controller
         return view('users.create');
     }
     public function show(User $user){
-        return view('users.show',compact('user'));
+        $statuses = $user->statuses()
+                    ->orderBy('created_at','desc')
+                    ->paginate(30);
+        return view('users.show',compact('user','statuses'));
     }
 
     public function store(Request $request){
@@ -30,4 +34,17 @@ class UsersController extends Controller
         session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
         return redirect()->route('users.show',[$user]);
     }
+    protected function sendEmailConfirmationTo($user)
+    {
+        $view = 'emails.confirm';
+        $data = compact('user');
+        $to = $user->email;
+        $subject = "感谢注册 Sample 应用！请确认你的邮箱。";
+
+        Mail::send($view, $data, function ($message) use ($to, $subject) {
+            $message->to($to)->subject($subject);
+        });
+    }
+
+
 }

@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>@yield('title', 'Sample App') - Laravel 入门教程</title>
-    <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <link rel="stylesheet" type="text/css" href="/css/app.css?{{time()}}">
 </head>
 <body>
     @include('layouts._header')
