@@ -12,13 +12,13 @@ class FollowersTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::all();
+        $users = User::all();
         $user = $users->first();
         $user_id = $user->id;
 
         //获取去除掉id为1的所有用户ID数组
         $followers = $users->slice(1);
-        $follower_ids = $followers->pluck('id')->tpArray();
+        $follower_ids = $followers->pluck('id')->toArray();
 
         // 关注除了1号用户以外的所有用户
         $user->follow($follower_ids);

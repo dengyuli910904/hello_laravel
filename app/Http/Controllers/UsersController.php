@@ -83,19 +83,6 @@ class UsersController extends Controller
         return back();
     }
 
-    protected function sendEmailconfirmationTo($user){
-        $view = 'emails.confirm';
-        $data = compact('user');
-        $from = 'lily@163.com';
-        $name = 'lily';
-        $to = $user->email;
-        $subject = "感谢您注册 Sqmple  应用！请确认你的邮箱。";
-
-        Mail::send($view,$data,function($message) use($from, $name, $to, $subject){
-            $message->from($from, $name)->to($to)->subject($subject);
-        });
-    }
-
     public function confirmEmail($token){
         $user = User::where('activation_token', $token)->firstOrFail();
 
@@ -118,4 +105,17 @@ class UsersController extends Controller
             $message->to($to)->subject($subject);
         });
     }
+
+    public function followings(User $user){
+        $users = $user->followings()->paginate();
+        $title = '关注的人';
+        return view('users.show_follow', compact('users', 'title'));
+    }
+
+    public function followers(User $user){
+        $users = $user->followers()->paginate(30);
+        $title = '粉丝';
+        return view('users.show_follow', compact('users', 'title'));
+    }
+
 }
